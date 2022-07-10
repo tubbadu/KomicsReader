@@ -74,7 +74,7 @@ src/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp: src/CMakeFiles/KomicsRead
 src/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp: ../src/contents/ui/main.qml
 src/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp: /usr/lib64/qt5/bin/rcc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic RCC for resources.qrc"
-	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/cmake -E cmake_autorcc /home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/KomicsReader_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json 
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/cmake -E cmake_autorcc /home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/KomicsReader_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json Debug
 
 src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/mocs_compilation.cpp.o: src/CMakeFiles/KomicsReader.dir/flags.make
 src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/mocs_compilation.cpp.o: src/KomicsReader_autogen/mocs_compilation.cpp

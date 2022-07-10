@@ -19,7 +19,7 @@ import QtQml.Models 2.2
 
 Kirigami.ApplicationWindow {
 	id: window
-	title: i18nc("@title:window", "Hello World")
+	title: "KomicsReader"
 	property bool rotate: false
 
 	function toggleFullscreen(){
@@ -39,7 +39,8 @@ Kirigami.ApplicationWindow {
 			}
 
 			function pdfConvert(file){
-				// TODO
+				let cmd = "pdftoppm -jpeg -r 300 \"" + file + "\" -o /tmp/KomicsReader/img"
+				launch(cmd)
 			}
 		}
 		Directory{
@@ -61,6 +62,7 @@ Kirigami.ApplicationWindow {
 		}
 	}
 	Item{ id: toolbar
+	z: 500
 		// TODO perhaps header?  Kirigami.ToolBarApplicationHeader
 		width: (window.rotate? parent.height : parent.width)
 		y: (window.rotate? parent.height : 0)
@@ -89,35 +91,50 @@ Kirigami.ApplicationWindow {
 			actions: [
 				Kirigami.Action {  //TODO
 					text: "open"
-					visible: !rotate
+					//visible: !rotate
 					icon.name: "document-open-folder" 
 					onTriggered: fileDialog.open()
 				},
 				Kirigami.Action { 
 					text: "fullscreen"
-					visible: !rotate
+					visible: !rotate // see comment in action "Rotate"
 					icon.name: "view-fullscreen" 
 					onTriggered: window.toggleFullscreen()
 				}, 
 				Kirigami.Action { 
 					text: "Rotate" 
-					visible: (window.visibility === 5)
+					visible: (window.visibility === 5) // the actiontoolbar's background (id depends on kirigami.page) beheaves weirdly when toggling fullscreen while staying rotate, so I'll hide those button in order to avoid messing things up 
 					icon.name: "screen-rotate-auto-on" 
 					onTriggered: window.rotate = !window.rotate
 				}
 			]
 		}
 	}
-	pageStack.initialPage: Kirigami.Page { id: root
+	pageStack.initialPage: Kirigami.Page {id: pagee
 		padding: 0
 		y: (rotate? window.height : 0)
 		transform: Rotation{
 			angle: (window.rotate ? -90 : 0)
 		}
+		Item{
+			id: page
+			anchors.fill: parent
+		}
+	}
+	Item{
+		id: root
+		height: page.height
+		width: page.width
+		anchors.bottom: parent.bottom
+		
 		property string rootDir: "/tmp/KomicsReader/"
 		property var fileJson: []
 		property var fileList: []
 		property int index: 0
+
+		onIndexChanged:{
+			pageCounter.startTimeout()
+		}
 
 		function next(q=1){
 			index += q
@@ -156,6 +173,7 @@ Kirigami.ApplicationWindow {
 					// extract file"
 					if( arg.match(/\.(pdf)$/g) !== null){
 						// convert pdf to jpg TODO!
+						launcher.pdfConvert(arg)
 					} else {
 						launcher.extract(arg)
 					}
@@ -185,14 +203,21 @@ Kirigami.ApplicationWindow {
 		//////// GUI //////////
 		Item { id: gui
 			width: (window.rotate? window.height : parent.width)
-			height: (window.rotate? parent.width : parent.height)
+			height: (window.rotate? page.width : parent.height)
+			y: (rotate? parent.height : 0)
+			transform: Rotation{
+				angle: (window.rotate ? -90 : 0)
+			}
 			
 			Image{ id: img
-				anchors.fill: parent
+				anchors.bottom: parent.bottom
+				height: (window.rotate? parent.height - (window.height - page.height) : parent.height)
+				anchors.left: parent.left
+				anchors.right: parent.right
+
 				fillMode: Image.PreserveAspectFit
 				property string url: root.fileList[root.index]
 				source: (url === "" ? null : "file://" + url.replace(/\#/g, "%23")) // is null good?
-
 				MultiPointTouchArea { id: touch
 					property int xThreshold: 100
 					property int yThreshold: 200
@@ -223,7 +248,7 @@ Kirigami.ApplicationWindow {
 								tap2 = false
 								stop()
 								// toggle fullscreen
-								//window.toggleFullscreen() // disabled because the topbar is better
+								window.toggleFullscreen()
 							}
 						}
 
@@ -252,96 +277,126 @@ Kirigami.ApplicationWindow {
 							root.next()
 						} else if (x1 - x0 > xThreshold) {
 							root.previous()
-						} else if (y0 - y1 > xThreshold) {
+						} 
+						if (y0 - y1 > xThreshold) {
 							console.log("up")
 						} else if (y1 - y0 > xThreshold) {
 							console.log("down")
 						}
 					}
-				}
 
-				Component.onCompleted: root.openFile()
-			}
-
-			Item { id: leftItem
-				anchors.left: parent.left
-				height: parent.height
-				width: 150
-				MultiPointTouchArea{ id: touchLeftbar
-					width: 20
-					height: parent.height
-					y: 0
-					touchPoints: [
-						TouchPoint { id: p2 }
-					]
-
-					onReleased: {
-						if(leftbar.x < 0){
-							leftbar.x = - leftbar.width // close
-							// TODO add animation
-						} else {
-							leftbar.x = 0
-						}
-						touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
-					}
 					onUpdated: {
-						if(p2.x - leftbar.width + touchLeftbar.x < 0){
-							leftbar.x = p2.x - leftbar.width + touchLeftbar.x
-						} else {
-							leftbar.x = 0
-						}
+						xx.height = point1.y
+						xx.width = point1.x
 					}
 				}
-				Rectangle{ id: leftbar
-					color: "white"
-					width: 100 //parent.width
-					height: parent.height //toolbar.height + 10
-					x: -width
-					z: 100
-					Component.onCompleted: {
-						color.a = 0.1
-						// open topbar
-						leftbar.x = 0
-						touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
+
+				Item { id: leftItem
+					anchors.left: parent.left
+					height: parent.height
+					width: 150
+					MultiPointTouchArea{ id: touchLeftbar
+						width: 20
+						height: parent.height
+						y: 0
+						touchPoints: [
+							TouchPoint { id: p2 }
+						]
+
+						onReleased: {
+							if(leftbar.x < 0){
+								leftbar.x = - leftbar.width // close
+							} else {
+								leftbar.x = 0
+							}
+							touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
+						}
+						onUpdated: {
+							if(p2.x - leftbar.width + touchLeftbar.x < 0){
+								leftbar.x = p2.x - leftbar.width + touchLeftbar.x
+							} else {
+								leftbar.x = 0
+							}
+						}
 					}
+					Rectangle{ id: leftbar
+						color: "white"
+						width: 150 
+						height: parent.height 
+						x: -width
+						z: 100
+						Component.onCompleted: {
+							color.a = 0.1
+							// open topbar
+							leftbar.x = 0
+							touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
+						}
 
-					DelegateModel { id: lModel
-						model: ListModel {}
-						delegate: Rectangle{
-							height: pageName.height
-							width: lView.width
-							color: "transparent"
-							Text{
-								id: pageName
-								width: parent.width
-								text: name //(isFile ? "    page " + (pos + 1) : "url")
-								wrapMode: Text.Wrap
-								font.pixelSize: 15
-								color: "white"
-								style: Text.Outline
-								styleColor: "black"
+						DelegateModel { id: lModel
+							model: ListModel {}
+							delegate: Rectangle{
+								height: pageName.height
+								width: lView.width
+								color: "transparent"
+								Text{
+									id: pageName
+									width: parent.width
+									text: name
+									wrapMode: Text.Wrap
+									font.pixelSize: 15
+									color: "white"
+									style: Text.Outline
+									styleColor: "black"
 
-								MouseArea{
-									anchors.fill: parent
+									MouseArea{
+										anchors.fill: parent
 
-									onClicked: {
-										root.goTo(pos)
+										onClicked: {
+											root.goTo(pos)
+										}
 									}
 								}
 							}
 						}
-					}
-					ListView{ id: lView
-						model: lModel
-						anchors.bottom: parent.bottom
-						height: parent.height - 10
-						width: parent.width - 10
+						ListView{ id: lView
+							model: lModel
+							anchors.bottom: parent.bottom
+							height: parent.height - 10
+							width: parent.width - 10
 
-						function append(name, pos){ // just a shorter way to do it
-							lModel.model.append({"name": name, "pos": pos})
+							function append(name, pos){ // just a shorter way to do it
+								lModel.model.append({"name": name, "pos": pos})
+							}
 						}
 					}
 				}
+
+				Text {
+					id: pageCounter
+					text: (root.index + 1) + "/" + root.fileList.length
+					anchors.top: parent.top
+					anchors.right: parent.right
+					font.pixelSize: 30
+					style: Text.Outline
+					styleColor: "black"
+					visible: false
+					color: "white"
+					function startTimeout(){
+						visible = true
+						pageCounterTimeout.restart()
+					}
+
+					Timer{
+						id: pageCounterTimeout
+						running: false
+						repeat: false
+						interval: 800
+						onTriggered:{
+							pageCounter.visible = false
+						}
+					}
+				}
+				Component.onCompleted: root.openFile()
 			}
 		}
 	}

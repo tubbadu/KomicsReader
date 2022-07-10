@@ -68,7 +68,7 @@ include src/CMakeFiles/KomicsReader_autogen.dir/progress.make
 
 src/CMakeFiles/KomicsReader_autogen:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC for target KomicsReader"
-	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/cmake -E cmake_autogen /home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/KomicsReader_autogen.dir/AutogenInfo.json ""
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/cmake -E cmake_autogen /home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/KomicsReader_autogen.dir/AutogenInfo.json Debug
 
 KomicsReader_autogen: src/CMakeFiles/KomicsReader_autogen
 KomicsReader_autogen: src/CMakeFiles/KomicsReader_autogen.dir/build.make
