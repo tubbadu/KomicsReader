@@ -191,13 +191,16 @@ Kirigami.ApplicationWindow {
 							lView.append(" " + root.fileJson[i]["url"].replace(/^.*[\\\/]/, ""), root.fileList.length) //.replace(/^.*[\\\/]/, "")
 						}
 					}
-					// display first file
-					root.index = 0
+					// unset the image source
+					root.index = -1
+					// display the first image after a small amount of time (so it resets)
+					resetImageTimer.start()
 					// do other things under here
 				}		
 			} else {
 				console.log("is undefined")
 			}
+			loading.running = false
 		}
 
 		//////// GUI //////////
@@ -370,9 +373,23 @@ Kirigami.ApplicationWindow {
 						}
 					}
 				}
-
-				Text {
-					id: pageCounter
+				BusyIndicator {
+					id: loading
+					running: true
+					visible: true
+					anchors.centerIn: parent
+					height: 100
+					width: height
+					Timer { id: startProcessTimer
+						running: true
+						repeat: false
+						interval: 100
+						onTriggered:{
+							root.openFile()
+						}
+					}			
+				}
+				Text { id: pageCounter
 					text: (root.index + 1) + "/" + root.fileList.length
 					anchors.top: parent.top
 					anchors.right: parent.right
@@ -395,8 +412,18 @@ Kirigami.ApplicationWindow {
 							pageCounter.visible = false
 						}
 					}
+
+
 				}
-				Component.onCompleted: root.openFile()
+
+				Timer { id: resetImageTimer
+					running: false
+					repeat: false
+					interval: 100
+					onTriggered:{
+						root.index = 0
+					}
+				}
 			}
 		}
 	}
