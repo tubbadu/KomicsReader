@@ -1,0 +1,10 @@
+/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles/uninstall.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles/fetch-translations.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles/test.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles/edit_cache.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles/rebuild_cache.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/KomicsReader.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/test.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/edit_cache.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/rebuild_cache.dir
+/home/tubbadu/code/Kirigami/KomicsReader/build/src/CMakeFiles/KomicsReader_autogen.dir
