@@ -320,13 +320,13 @@ Kirigami.ApplicationWindow {
 						}
 					}
 					Rectangle{ id: leftbar
-						color: "white"
+						color: (window.active? Kirigami.Theme.alternateBackgroundColor : "transparent")
 						width: 150 
 						height: parent.height 
 						x: -width
 						z: 100
 						Component.onCompleted: {
-							color.a = 0.1
+							//color.a = 0.1
 							// open topbar
 							leftbar.x = 0
 							touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
