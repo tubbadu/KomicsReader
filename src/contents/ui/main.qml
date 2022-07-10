@@ -16,87 +16,104 @@ import QtQml.Models 2.2
 
 
 // Base element, provides basic features needed for all kirigami applications
+
 Kirigami.ApplicationWindow {
 	id: window
 	title: i18nc("@title:window", "Hello World")
+	property bool rotate: false
 
 	function toggleFullscreen(){
 		if(window.visibility === 5){
 			window.visibility = "Windowed"
-			leftbar.x = 0
-			touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
 		} else {
-			window.visibility = "FullScreen"
-			leftbar.x = - leftbar.width
-			touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
+			window.visibility = "FullScreen" // hhere
 		}
 	}
+	Item{ id: backend
+		Launcher {
+			id: launcher
 
-	Launcher {
-        id: launcher
-
-		function extract(file){
-			let cmd = "ark \"" + file + "\" -o /tmp/KomicsReader -ab"
-			launch(cmd)
-		}
-
-		function pdfConvert(file){
-			// TODO
-		}
-    }
-
-	Text{
-		id: text
-		color: "white"
-		anchors.centerIn: parent
-		text: root.fileList[root.index] + "<<"
-	}
-	Directory{
-		id: dir
-		Component.onCompleted:{
-			
-		}
-	}
-
-	// TODO perhaps header?  Kirigami.ToolBarApplicationHeader
-	Kirigami.ActionToolBar { // top left toolbar
-		anchors.top: parent.top
-		actions: [
-			Kirigami.Action { 
-				text: "10x" 
-				icon.name: "go-previous" 
-				onTriggered: root.previous(10)
-			}, 
-			Kirigami.Action { 
-				text: "10x" 
-				icon.name: "go-next" 
-				onTriggered: root.next(10)
+			function extract(file){
+				let cmd = "ark \"" + file + "\" -o /tmp/KomicsReader -ab"
+				launch(cmd)
 			}
-		]
-	}
 
-	Kirigami.ActionToolBar { // top right toolbar
-		anchors.right: parent.right
-		actions: [
-			Kirigami.Action { 
-				text: "fullscreen" 
-				icon.name: "view-fullscreen" 
-				onTriggered: window.toggleFullscreen()
-			}, 
-			Kirigami.Action { 
-				text: "Rotate" 
-				icon.name: "screen-rotate-auto-on" 
-				onTriggered: showPassiveNotification("BEEP!") 
+			function pdfConvert(file){
+				// TODO
 			}
-		]
+		}
+		Directory{
+			id: dir
+		}
+		FileDialog {
+			id: fileDialog
+			title: "Please choose a file"
+			folder: shortcuts.home
+			selectFolder: false
+			nameFilters: [ "Comics files (*.cbr *.cbz)", "Pdf files (*.pdf)" ] // TODO fix
+			onAccepted: {
+				let path = (fileDialog.fileUrl + "").replace(/^file\:\/\/./g, "/") // the . is just because the text editor is stupid and \//g was considered as a comment
+				root.openFile(path)
+			}
+			onRejected: {
+				console.log("Canceled")
+			}
+		}
 	}
+	Item{ id: toolbar
+		// TODO perhaps header?  Kirigami.ToolBarApplicationHeader
+		width: (window.rotate? parent.height : parent.width)
+		y: (window.rotate? parent.height : 0)
+		transform: Rotation{
+			angle: (window.rotate ? -90 : 0)
+		}
 
-	// Initial page to be loaded on app load
-	pageStack.initialPage: Kirigami.Page {
-		id: root
+		Kirigami.ActionToolBar { // top left toolbar
+			anchors.top: parent.top
+			actions: [
+				Kirigami.Action { 
+					text: "10x" 
+					icon.name: "go-previous" 
+					onTriggered: root.previous(10)
+				}, 
+				Kirigami.Action { 
+					text: "10x" 
+					icon.name: "go-next" 
+					onTriggered: root.next(10)
+				}
+			]
+		}
+
+		Kirigami.ActionToolBar { // top right toolbar
+			anchors.right: parent.right
+			actions: [
+				Kirigami.Action {  //TODO
+					text: "open"
+					visible: !rotate
+					icon.name: "document-open-folder" 
+					onTriggered: fileDialog.open()
+				},
+				Kirigami.Action { 
+					text: "fullscreen"
+					visible: !rotate
+					icon.name: "view-fullscreen" 
+					onTriggered: window.toggleFullscreen()
+				}, 
+				Kirigami.Action { 
+					text: "Rotate" 
+					visible: (window.visibility === 5)
+					icon.name: "screen-rotate-auto-on" 
+					onTriggered: window.rotate = !window.rotate
+				}
+			]
+		}
+	}
+	pageStack.initialPage: Kirigami.Page { id: root
 		padding: 0
-
-		Layout.maximumWidth: 200
+		y: (rotate? window.height : 0)
+		transform: Rotation{
+			angle: (window.rotate ? -90 : 0)
+		}
 		property string rootDir: "/tmp/KomicsReader/"
 		property var fileJson: []
 		property var fileList: []
@@ -129,8 +146,7 @@ Kirigami.ApplicationWindow {
 		}
 
 		function openFile(arg=Qt.application.arguments[1]){
-			// TODO do this only after the page has been displayed
-			//let arg = Qt.application.arguments[1]
+			// TODO do this only after the gui has been displayed (and display a loading message)
 			if(arg !== undefined){
 				if(dir.exists(arg) && arg.match(/\.(cbz|cbr|pdf)$/g) !== null){
 					// create dir if not present
@@ -141,7 +157,6 @@ Kirigami.ApplicationWindow {
 					if( arg.match(/\.(pdf)$/g) !== null){
 						// convert pdf to jpg TODO!
 					} else {
-						//text.text ="extracting " + arg
 						launcher.extract(arg)
 					}
 					// read files
@@ -149,6 +164,7 @@ Kirigami.ApplicationWindow {
 					root.fileJson.shift() // remove /tmp/KomicsReader from file list
 					root.fileJson.shift() // remove /tmp/KomicsReader/firstfolder from file list
 					root.fileList = []
+					lModel.model.clear()
 					for(let i=0; i<root.fileJson.length; i++){
 						if(root.fileJson[i]["isFile"]){
 							lView.append("    Page " + (root.fileList.length + 1), root.fileList.length)
@@ -159,180 +175,174 @@ Kirigami.ApplicationWindow {
 					}
 					// display first file
 					root.index = 0
-					// do other things
-					
+					// do other things under here
 				}		
 			} else {
-				text.text = "is undefined"
+				console.log("is undefined")
 			}
 		}
 
-		Image{
-			id: img
-			anchors.fill: parent
-			fillMode: Image.PreserveAspectFit
-			property string url: root.fileList[root.index]
-			source: (url === "" ? null : "file://" + url.replace(/\#/g, "%23")) // is null good?
-
-			MultiPointTouchArea {
-				id: touch
-				property int xThreshold: 100
-				property int yThreshold: 200
-				property int x0: 0
-				property int x1: 0
-				property int y0: 0
-				property int y1: 0
-
+		//////// GUI //////////
+		Item { id: gui
+			width: (window.rotate? window.height : parent.width)
+			height: (window.rotate? parent.width : parent.height)
+			
+			Image{ id: img
 				anchors.fill: parent
-				touchPoints: [
-					TouchPoint { id: point1 }
-				]
+				fillMode: Image.PreserveAspectFit
+				property string url: root.fileList[root.index]
+				source: (url === "" ? null : "file://" + url.replace(/\#/g, "%23")) // is null good?
 
-				Timer{
-					id: tripleClickTimer
+				MultiPointTouchArea { id: touch
+					property int xThreshold: 100
+					property int yThreshold: 200
+					property int x0: 0
+					property int x1: 0
+					property int y0: 0
+					property int y1: 0
 
-					property bool tap1: false
-					property bool tap2: false
+					anchors.fill: parent
+					touchPoints: [
+						TouchPoint { id: point1 }
+					]
 
-					function addTap(){
-						start()
-						if(!tap1){
-							tap1 = true
-						} else if(!tap2){
-							tap2 = true
-						} else {
-							// this is the tripleclick!
+					Timer{ id: tripleClickTimer
+
+						property bool tap1: false
+						property bool tap2: false
+
+						function addTap(){
+							start()
+							if(!tap1){
+								tap1 = true
+							} else if(!tap2){
+								tap2 = true
+							} else {
+								// this is the tripleclick!
+								tap1 = false
+								tap2 = false
+								stop()
+								// toggle fullscreen
+								//window.toggleFullscreen() // disabled because the topbar is better
+							}
+						}
+
+						running: false
+						repeat: false
+						interval: 350
+						onTriggered:{
 							tap1 = false
 							tap2 = false
-							stop()
-							// toggle fullscreen
-							//window.toggleFullscreen()
 						}
 					}
 
-					running: false
-					repeat: false
-					interval: 350
-					onTriggered:{
-						tap1 = false
-						tap2 = false
+					onPressed: {
+						tripleClickTimer.addTap()
+
+						x0 = point1.x
+						x1 = point1.x
+
+						y0 = point1.y
+						y1 = point1.y
+					}
+					onReleased:{
+						x1 = point1.x
+						y1 = point1.y
+						if (x0 - x1 > xThreshold) {
+							root.next()
+						} else if (x1 - x0 > xThreshold) {
+							root.previous()
+						} else if (y0 - y1 > xThreshold) {
+							console.log("up")
+						} else if (y1 - y0 > xThreshold) {
+							console.log("down")
+						}
 					}
 				}
 
-				onPressed: {
-					tripleClickTimer.addTap()
-
-					x0 = point1.x
-					x1 = point1.x
-
-					y0 = point1.y
-					y1 = point1.y
-				}
-				onReleased:{
-					x1 = point1.x
-					y1 = point1.y
-					if (x0 - x1 > xThreshold) {
-						root.next()
-					} else if (x1 - x0 > xThreshold) {
-						root.previous()
-					} else if (y0 - y1 > xThreshold) {
-						log.log("up")
-					} else if (y1 - y0 > xThreshold) {
-						log.log("down")
-					}
-				}
+				Component.onCompleted: root.openFile()
 			}
-		}
 
-		Item {
-			id: leftItem
-			anchors.left: parent.left
-			height: parent.height
-			width: 150
-			MultiPointTouchArea{
-				id: touchLeftbar
-				width: 20
+			Item { id: leftItem
+				anchors.left: parent.left
 				height: parent.height
-				y: 0
-				//anchors.top: gui.top
-				touchPoints: [
-					TouchPoint { id: p2 }
-				]
+				width: 150
+				MultiPointTouchArea{ id: touchLeftbar
+					width: 20
+					height: parent.height
+					y: 0
+					touchPoints: [
+						TouchPoint { id: p2 }
+					]
 
-				onReleased: {
-					if(leftbar.x < 0){
-						leftbar.x = - leftbar.width // close
-						// TODO add animation
-					} else {
-						leftbar.x = 0
+					onReleased: {
+						if(leftbar.x < 0){
+							leftbar.x = - leftbar.width // close
+							// TODO add animation
+						} else {
+							leftbar.x = 0
+						}
+						touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
 					}
-					touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
-				}
-				onUpdated: {
-					if(p2.x - leftbar.width + touchLeftbar.x < 0){
-						leftbar.x = p2.x - leftbar.width + touchLeftbar.x
-					} else {
-						leftbar.x = 0
+					onUpdated: {
+						if(p2.x - leftbar.width + touchLeftbar.x < 0){
+							leftbar.x = p2.x - leftbar.width + touchLeftbar.x
+						} else {
+							leftbar.x = 0
+						}
 					}
 				}
-			}
-			Rectangle{
-				id: leftbar
-				color: "white"
-				width: 100 //parent.width
-				height: parent.height //toolbar.height + 10
-				x: -width
-				z: 100
-				Component.onCompleted: {
-					color.a = 0.1
+				Rectangle{ id: leftbar
+					color: "white"
+					width: 100 //parent.width
+					height: parent.height //toolbar.height + 10
+					x: -width
+					z: 100
+					Component.onCompleted: {
+						color.a = 0.1
+						// open topbar
+						leftbar.x = 0
+						touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
+					}
 
-					// open topbar
-					leftbar.x = 0
-					touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
-				}
+					DelegateModel { id: lModel
+						model: ListModel {}
+						delegate: Rectangle{
+							height: pageName.height
+							width: lView.width
+							color: "transparent"
+							Text{
+								id: pageName
+								width: parent.width
+								text: name //(isFile ? "    page " + (pos + 1) : "url")
+								wrapMode: Text.Wrap
+								font.pixelSize: 15
+								color: "white"
+								style: Text.Outline
+								styleColor: "black"
 
-				DelegateModel {
-					id: lModel
-					model: ListModel {}
-					delegate: Rectangle{
-						height: pageName.height
-						width: lView.width
-						color: "transparent"
-						Text{
-							id: pageName
-							width: parent.width
-							text: name //(isFile ? "    page " + (pos + 1) : "url")
-							wrapMode: Text.Wrap
-							font.pixelSize: 15
-							color: "white"
-							style: Text.Outline
-							styleColor: "black"
+								MouseArea{
+									anchors.fill: parent
 
-							MouseArea{
-								anchors.fill: parent
-
-								onClicked: {
-									root.goTo(pos)
+									onClicked: {
+										root.goTo(pos)
+									}
 								}
 							}
 						}
 					}
-				}
-				ListView{
-					id: lView
-					model: lModel
-					anchors.bottom: parent.bottom
-					height: parent.height - 10
-					width: parent.width - 10
+					ListView{ id: lView
+						model: lModel
+						anchors.bottom: parent.bottom
+						height: parent.height - 10
+						width: parent.width - 10
 
-					function append(name, pos){ // just a shorter way to do it
-						lModel.model.append({"name": name, "pos": pos})
+						function append(name, pos){ // just a shorter way to do it
+							lModel.model.append({"name": name, "pos": pos})
+						}
 					}
 				}
 			}
 		}
 	}
-
-	Component.onCompleted: root.openFile()
 }
-

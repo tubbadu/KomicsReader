@@ -70,7 +70,7 @@ bool Directory::exists(const QString &filePath)
 	return QFile::exists(filePath);
 }
 
-QJsonArray scanDir(QDir dir) // copyed from internet, partially modified
+QJsonArray scanDir(QDir dir, const QStringList filters) // copyed from internet, partially modified
 {
 	QJsonArray output;
 	QJsonObject obj;
@@ -79,7 +79,7 @@ QJsonArray scanDir(QDir dir) // copyed from internet, partially modified
 
 	qDebug() << "Scanning: " << dir.path();
 
-	QStringList fileList = dir.entryList();
+	QStringList fileList = dir.entryList(filters);
 
 	obj.insert("url", dir.path());
 	obj.insert("isFile", false);
@@ -99,7 +99,7 @@ QJsonArray scanDir(QDir dir) // copyed from internet, partially modified
 	for (int i=0; i<dirList.size(); ++i)
 	{
 		QString newPath = QString("%1/%2").arg(dir.absolutePath()).arg(dirList.at(i));
-		QJsonArray add = scanDir(QDir(newPath));
+		QJsonArray add = scanDir(QDir(newPath), filters);
 		for (const auto& value : add)
         	output << value;
 	}
@@ -108,7 +108,7 @@ QJsonArray scanDir(QDir dir) // copyed from internet, partially modified
 
 QJsonArray Directory::getAllFilesAndDirs(const QString &rootDir)
 {
-	return scanDir(QDir(rootDir));
+	return scanDir(QDir(rootDir), {"*.jpg", "*.jpeg", "*.png"});
 }
 
 /*
