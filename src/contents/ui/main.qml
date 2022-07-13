@@ -15,6 +15,7 @@ import Qt.labs.settings 1.0
 
 import Launcher 1.0
 import Directory 1.0
+import FileInfo 1.0
 
 // Base element, provides basic features needed for all kirigami applications
 
@@ -68,10 +69,15 @@ Kirigami.ApplicationWindow {
 		Settings{
 			id: settings
 
-			function saveFileIndex(filename, index){
-				setValue(filename, index)
+			function saveFileIndex(path, index){
+				let fileSize = fileinfo.getSize(path)
+				let fileName = path.replace(/^.*[\\\/]/, "")
+				let key = fileName + "_" + fileSize
+				setValue(key, index)
 			}
-			//property alias indexes
+		}
+		FileInfo{
+			id: fileinfo
 		}
 	}
 	Item{ id: toolbar
@@ -86,7 +92,7 @@ Kirigami.ApplicationWindow {
 		Kirigami.ActionToolBar { // top left toolbar
 			anchors.top: parent.top
 			actions: [
-				Kirigami.Action { 
+				Kirigami.Action {
 					text: "10x" 
 					icon.name: "go-previous" 
 					onTriggered: root.previous(10)
@@ -435,7 +441,11 @@ Kirigami.ApplicationWindow {
 					repeat: false
 					interval: 100
 					onTriggered:{
-						root.index = settings.value(root.currentFile, 0)
+						let fileSize = fileinfo.getSize(root.currentFile)
+						let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
+						let key = fileName + "_" + fileSize
+
+						root.index = settings.value(key, 0)
 					}
 				}
 			}

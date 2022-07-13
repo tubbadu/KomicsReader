@@ -226,6 +226,30 @@ directory.cpp.s:
 	cd /home/tubbadu/code/Kirigami/KomicsReader/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/KomicsReader.dir/build.make src/CMakeFiles/KomicsReader.dir/directory.cpp.s
 .PHONY : directory.cpp.s
 
+fileinfo.o: fileinfo.cpp.o
+.PHONY : fileinfo.o
+
+# target to build an object file
+fileinfo.cpp.o:
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/KomicsReader.dir/build.make src/CMakeFiles/KomicsReader.dir/fileinfo.cpp.o
+.PHONY : fileinfo.cpp.o
+
+fileinfo.i: fileinfo.cpp.i
+.PHONY : fileinfo.i
+
+# target to preprocess a source file
+fileinfo.cpp.i:
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/KomicsReader.dir/build.make src/CMakeFiles/KomicsReader.dir/fileinfo.cpp.i
+.PHONY : fileinfo.cpp.i
+
+fileinfo.s: fileinfo.cpp.s
+.PHONY : fileinfo.s
+
+# target to generate assembly for a file
+fileinfo.cpp.s:
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/KomicsReader.dir/build.make src/CMakeFiles/KomicsReader.dir/fileinfo.cpp.s
+.PHONY : fileinfo.cpp.s
+
 launcher.o: launcher.cpp.o
 .PHONY : launcher.o
 
@@ -294,6 +318,9 @@ help:
 	@echo "... directory.o"
 	@echo "... directory.i"
 	@echo "... directory.s"
+	@echo "... fileinfo.o"
+	@echo "... fileinfo.i"
+	@echo "... fileinfo.s"
 	@echo "... launcher.o"
 	@echo "... launcher.i"
 	@echo "... launcher.s"

@@ -223,6 +223,8 @@ src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt5/QtCore/QJsonObject \
  /usr/include/qt5/QtCore/qjsonobject.h /usr/include/qt5/QtCore/QFileInfo \
  /usr/include/qt5/QtCore/qfileinfo.h \
+ /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/moc_fileinfo.cpp \
+ /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/../../../../src/fileinfo.h \
  /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/moc_launcher.cpp \
  /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/../../../../src/launcher.h \
  /usr/include/qt5/QtCore/QProcess /usr/include/qt5/QtCore/qprocess.h

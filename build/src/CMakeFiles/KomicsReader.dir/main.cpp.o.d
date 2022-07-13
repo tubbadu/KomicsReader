@@ -560,4 +560,5 @@ src/CMakeFiles/KomicsReader.dir/main.cpp.o: \
  /usr/include/qt5/QtCore/QDir /usr/include/qt5/QtCore/QDirIterator \
  /usr/include/qt5/QtCore/QFile /usr/include/qt5/QtCore/QJsonArray \
  /usr/include/qt5/QtCore/QJsonValue /usr/include/qt5/QtCore/QJsonObject \
- /usr/include/qt5/QtCore/QFileInfo
+ /usr/include/qt5/QtCore/QFileInfo \
+ /home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.h

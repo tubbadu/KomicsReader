@@ -2,6 +2,7 @@
 
 ## TODOs:
 * [x] save index of read files and reload it on startup
+* [ ] change the "remember file index" method from filepath to hash with [this](https://doc.qt.io/qt-5/qcryptographichash.html)
 * [x] "open" action doesn't load the image if the current one was at position 0, fix (perhaps with a timer)
 * [ ] "open" action doesn't work with files with `#` in it, fix
 * [x] touchscreen doesn't work anymore????? WTF??? (it doesn't work inside a `Kirigami.Page`) ~~TODO REPORT BUG!~~ (done)
