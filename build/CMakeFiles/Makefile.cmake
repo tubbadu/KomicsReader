@@ -64,6 +64,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake"
   "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QMngPlugin.cmake"
   "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake"
+  "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QPdfPlugin.cmake"
   "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QSvgIconPlugin.cmake"
   "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QSvgPlugin.cmake"
   "/usr/lib64/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake"

@@ -1,19 +1,20 @@
 // Includes relevant modules used by the QML
 import QtQuick 2.15
-import QtQuick.Controls 2.0 as Controls
+//import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.13 as Kirigami
-
-import Launcher 1.0
-import Directory 1.0
 
 
 //import QtQuick.Window 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.3
-import Qt.labs.folderlistmodel 2.5
+//import Qt.labs.folderlistmodel 2.5
 import QtQml.Models 2.2
+import Qt.labs.settings 1.0
 
+
+import Launcher 1.0
+import Directory 1.0
 
 // Base element, provides basic features needed for all kirigami applications
 
@@ -25,9 +26,13 @@ Kirigami.ApplicationWindow {
 	function toggleFullscreen(){
 		if(window.visibility === 5){
 			window.visibility = "Windowed"
+			leftbar.x = 0 // open
 		} else {
 			window.visibility = "FullScreen" // hhere
+			leftbar.x = - leftbar.width // close
 		}
+		// adjust touchleftbar
+		touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
 	}
 	Item{ id: backend
 		Launcher {
@@ -60,9 +65,17 @@ Kirigami.ApplicationWindow {
 				console.log("Canceled")
 			}
 		}
+		Settings{
+			id: settings
+
+			function saveFileIndex(filename, index){
+				setValue(filename, index)
+			}
+			//property alias indexes
+		}
 	}
 	Item{ id: toolbar
-	z: 500
+		z: 500
 		// TODO perhaps header?  Kirigami.ToolBarApplicationHeader
 		width: (window.rotate? parent.height : parent.width)
 		y: (window.rotate? parent.height : 0)
@@ -121,13 +134,13 @@ Kirigami.ApplicationWindow {
 			anchors.fill: parent
 		}
 	}
-	Item{
-		id: root
+	Item{ id: root
 		height: page.height
 		width: page.width
 		anchors.bottom: parent.bottom
 		
 		property string rootDir: "/tmp/KomicsReader/"
+		property string currentFile: "" // perhaps change the functions extract etc so that no value is needed to be passed anymore, just read this value TODO (perhaps)
 		property var fileJson: []
 		property var fileList: []
 		property int index: 0
@@ -165,6 +178,7 @@ Kirigami.ApplicationWindow {
 		function openFile(arg=Qt.application.arguments[1]){
 			// TODO do this only after the gui has been displayed (and display a loading message)
 			if(arg !== undefined){
+				currentFile = arg
 				if(dir.exists(arg) && arg.match(/\.(cbz|cbr|pdf)$/g) !== null){
 					// create dir if not present
 					dir.makeDir(root.rootDir)
@@ -310,7 +324,7 @@ Kirigami.ApplicationWindow {
 							if(leftbar.x < 0){
 								leftbar.x = - leftbar.width // close
 							} else {
-								leftbar.x = 0
+								leftbar.x = 0 // open fully
 							}
 							touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
 						}
@@ -421,10 +435,16 @@ Kirigami.ApplicationWindow {
 					repeat: false
 					interval: 100
 					onTriggered:{
-						root.index = 0
+						root.index = settings.value(root.currentFile, 0)
 					}
 				}
 			}
 		}
+	}
+
+	onClosing: {
+		close.accepted = false
+		settings.saveFileIndex(root.currentFile, root.index)
+		Qt.quit()
 	}
 }
