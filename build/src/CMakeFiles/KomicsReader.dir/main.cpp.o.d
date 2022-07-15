@@ -561,4 +561,12 @@ src/CMakeFiles/KomicsReader.dir/main.cpp.o: \
  /usr/include/qt5/QtCore/QFile /usr/include/qt5/QtCore/QJsonArray \
  /usr/include/qt5/QtCore/QJsonValue /usr/include/qt5/QtCore/QJsonObject \
  /usr/include/qt5/QtCore/QFileInfo \
- /home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.h
+ /home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.h \
+ /home/tubbadu/code/Kirigami/KomicsReader/src/karchive.h \
+ /usr/local/include/KF5/KArchive/KArchive \
+ /usr/local/include/KF5/KArchive/karchive.h \
+ /usr/local/include/KF5/KArchive/KCompressionDevice \
+ /usr/local/include/KF5/KArchive/kcompressiondevice.h \
+ /usr/local/include/KF5/KArchive/karchive_export.h \
+ /usr/include/qt5/QtCore/QFileDevice /usr/include/qt5/QtCore/QIODevice \
+ /usr/include/qt5/QtCore/QMetaType

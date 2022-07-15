@@ -59,7 +59,7 @@ Kirigami.ApplicationWindow {
 			selectFolder: false
 			nameFilters: [ "Comics files (*.cbr *.cbz)", "Pdf files (*.pdf)" ] // TODO fix
 			onAccepted: {
-				let path = (fileDialog.fileUrl + "").replace(/^file\:\/\/./g, "/") // the . is just because the text editor is stupid and \//g was considered as a comment
+				let path = (fileDialog.fileUrl + "").replace(/\%23/g, "#").replace(/^file\:\/\/./g, "/") // the . is just because the text editor is stupid and \//g was considered as a comment
 				root.openFile(path)
 			}
 			onRejected: {
@@ -182,6 +182,7 @@ Kirigami.ApplicationWindow {
 		}
 
 		function openFile(arg=Qt.application.arguments[1]){
+			//showPassiveNotification(arg)
 			// TODO do this only after the gui has been displayed (and display a loading message)
 			if(arg !== undefined){
 				currentFile = arg

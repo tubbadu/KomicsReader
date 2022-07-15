@@ -12,6 +12,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/KomicsReader.dir/directory.cpp.o.d"
   "CMakeFiles/KomicsReader.dir/fileinfo.cpp.o"
   "CMakeFiles/KomicsReader.dir/fileinfo.cpp.o.d"
+  "CMakeFiles/KomicsReader.dir/karchive.cpp.o"
+  "CMakeFiles/KomicsReader.dir/karchive.cpp.o.d"
   "CMakeFiles/KomicsReader.dir/launcher.cpp.o"
   "CMakeFiles/KomicsReader.dir/launcher.cpp.o.d"
   "CMakeFiles/KomicsReader.dir/main.cpp.o"

@@ -7,6 +7,13 @@
 	"CMAKE_LIST_FILES" : 
 	[
 		"/home/tubbadu/code/Kirigami/KomicsReader/src/CMakeLists.txt",
+		"/usr/local/lib64/cmake/KF5Archive/KF5ArchiveConfigVersion.cmake",
+		"/usr/local/lib64/cmake/KF5Archive/KF5ArchiveConfig.cmake",
+		"/usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake",
+		"/usr/lib64/cmake/Qt5Core/Qt5CoreConfigVersion.cmake",
+		"/usr/lib64/cmake/Qt5Core/Qt5CoreConfig.cmake",
+		"/usr/local/lib64/cmake/KF5Archive/KF5ArchiveTargets.cmake",
+		"/usr/local/lib64/cmake/KF5Archive/KF5ArchiveTargets-debug.cmake",
 		"/home/tubbadu/code/Kirigami/KomicsReader/src/resources.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "/home/tubbadu/code/Kirigami/KomicsReader",
@@ -24,6 +31,12 @@
 			"/home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.h",
 			"Mu",
 			"EWIEGA46WW/moc_fileinfo.cpp",
+			null
+		],
+		[
+			"/home/tubbadu/code/Kirigami/KomicsReader/src/karchive.h",
+			"Mu",
+			"EWIEGA46WW/moc_karchive.cpp",
 			null
 		],
 		[
@@ -85,6 +98,8 @@
 		"/usr/include/KF5/Kirigami2",
 		"/usr/include/KF5",
 		"/usr/include/KF5/KI18n",
+		"/usr/local/include/KF5/KArchive",
+		"/usr/local/include/KF5",
 		"/usr/include/c++/12",
 		"/usr/include/c++/12/x86_64-redhat-linux",
 		"/usr/include/c++/12/backward",
@@ -133,6 +148,11 @@
 		],
 		[
 			"/home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.cpp",
+			"Mu",
+			null
+		],
+		[
+			"/home/tubbadu/code/Kirigami/KomicsReader/src/karchive.cpp",
 			"Mu",
 			null
 		],

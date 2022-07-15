@@ -225,6 +225,18 @@ src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt5/QtCore/qfileinfo.h \
  /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/moc_fileinfo.cpp \
  /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/../../../../src/fileinfo.h \
+ /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/moc_karchive.cpp \
+ /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/../../../../src/karchive.h \
+ /usr/local/include/KF5/KArchive/KArchive \
+ /usr/local/include/KF5/KArchive/karchive.h \
+ /usr/local/include/KF5/KArchive/KCompressionDevice \
+ /usr/local/include/KF5/KArchive/kcompressiondevice.h \
+ /usr/local/include/KF5/KArchive/karchive_export.h \
+ /usr/include/qt5/QtCore/QFileDevice \
+ /usr/include/qt5/QtCore/qfiledevice.h /usr/include/qt5/QtCore/QIODevice \
+ /usr/include/qt5/QtCore/qiodevice.h /usr/include/qt5/QtCore/QMetaType \
+ /usr/include/qt5/QtCore/qmetatype.h /usr/include/qt5/QtCore/QString \
+ /usr/include/qt5/QtCore/qstring.h \
  /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/moc_launcher.cpp \
  /home/tubbadu/code/Kirigami/KomicsReader/build/src/KomicsReader_autogen/EWIEGA46WW/../../../../src/launcher.h \
  /usr/include/qt5/QtCore/QProcess /usr/include/qt5/QtCore/qprocess.h

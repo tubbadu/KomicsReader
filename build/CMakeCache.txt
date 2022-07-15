@@ -406,6 +406,9 @@ KDE_L10N_SYNC_TRANSLATIONS:BOOL=OFF
 //Prevent an "uninstall" target from being generated.
 KDE_SKIP_UNINSTALL_TARGET:BOOL=OFF
 
+//The directory containing a CMake configuration file for KF5Archive.
+KF5Archive_DIR:PATH=/usr/local/lib64/cmake/KF5Archive
+
 //The directory containing a CMake configuration file for KF5CoreAddons.
 KF5CoreAddons_DIR:PATH=/usr/lib64/cmake/KF5CoreAddons
 
