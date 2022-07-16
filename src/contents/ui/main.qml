@@ -1,14 +1,8 @@
-// Includes relevant modules used by the QML
 import QtQuick 2.15
-//import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.2
-import org.kde.kirigami 2.13 as Kirigami
-
-
-//import QtQuick.Window 2.15
-import QtQuick.Controls 2.0
+import org.kde.kirigami 2.19 as Kirigami
+import QtQuick.Controls 2.15 as Controls
 import QtQuick.Dialogs 1.3
-//import Qt.labs.folderlistmodel 2.5
 import QtQml.Models 2.2
 import Qt.labs.settings 1.0
 
@@ -21,7 +15,7 @@ import FileInfo 1.0
 
 Kirigami.ApplicationWindow {
 	id: window
-	title: "KomicsReader"
+	title: i18n("KomicsReader")
 	//property bool rotate: false
 	property int rotate: 0
 
@@ -30,13 +24,34 @@ Kirigami.ApplicationWindow {
 			window.visibility = "Windowed"
 			leftbar.x = 0 // open
 		} else {
-			window.visibility = "FullScreen" // hhere
+			window.visibility = "FullScreen"
 			leftbar.x = - leftbar.width // close
 		}
 		// adjust touchleftbar
 		touchLeftbar.x = leftbar.x + leftbar.width - touchLeftbar.width/2
 	}
 	Item{ id: backend
+		Kirigami.Dialog {
+			id: help // TODO finish!
+			visible: false
+			title: window.title + " - " + i18n("Help")
+			preferredWidth: Kirigami.Units.gridUnit * 30
+	    	standardButtons: Kirigami.Dialog.Ok | Kirigami.Dialog.Cancel
+
+			onAccepted: console.log("OK button pressed")
+			onRejected: console.log("Rejected")
+		
+			ColumnLayout {
+				spacing: 0
+				Text{
+					width: Kirigami.Units.gridUnit * 20
+					text: "# " + window.title + "\n" + i18n("### A Comics Reader designed for touchscreens!") + "\n\n" + i18n("Swipe with you finger to the left or to the right to navigate through the pages") + "\n" + i18n("Enter fullscreen mode with the button in the toolbar")+ "\n" + i18n("Rotate the screen clockwise or counterclockwise with the button if your tablet does not support automatic rotate (or if you just want to read in your bed and the autorotate is your greatest enemy)")
+					color: Kirigami.Theme.textColor
+					textFormat: Text.MarkdownText
+					wrapMode: Text.Wrap
+				}
+			}
+		}
 		Launcher {
 			id: launcher
 
@@ -416,7 +431,7 @@ Kirigami.ApplicationWindow {
 						}
 					}
 				}
-				BusyIndicator {
+				Controls.BusyIndicator {
 					id: loading
 					running: true
 					visible: true
