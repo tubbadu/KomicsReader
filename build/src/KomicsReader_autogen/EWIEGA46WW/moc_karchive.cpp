@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Karchive_t {
     QByteArrayData data[4];
-    char stringdata0[25];
+    char stringdata0[26];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,12 +33,12 @@ struct qt_meta_stringdata_Karchive_t {
 static const qt_meta_stringdata_Karchive_t qt_meta_stringdata_Karchive = {
     {
 QT_MOC_LITERAL(0, 0, 8), // "Karchive"
-QT_MOC_LITERAL(1, 9, 6), // "launch"
-QT_MOC_LITERAL(2, 16, 0), // ""
-QT_MOC_LITERAL(3, 17, 7) // "program"
+QT_MOC_LITERAL(1, 9, 7), // "extract"
+QT_MOC_LITERAL(2, 17, 0), // ""
+QT_MOC_LITERAL(3, 18, 7) // "program"
 
     },
-    "Karchive\0launch\0\0program"
+    "Karchive\0extract\0\0program"
 };
 #undef QT_MOC_LITERAL
 
@@ -70,7 +70,7 @@ void Karchive::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         auto *_t = static_cast<Karchive *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: { QString _r = _t->launch((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 0: { QString _r = _t->extract((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }

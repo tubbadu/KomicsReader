@@ -10,10 +10,10 @@ class Karchive : public QObject
     Q_OBJECT
 public:
     explicit Karchive(QObject *parent = 0);
-    Q_INVOKABLE QString launch(const QString &program);
+    Q_INVOKABLE QString extract(const QString &program);
 
 private:
-    //KArchive *m_karchive;
+    KCompressionDevice *m_karchive;
 };
 
 #endif 

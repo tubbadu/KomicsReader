@@ -22,7 +22,8 @@ import FileInfo 1.0
 Kirigami.ApplicationWindow {
 	id: window
 	title: "KomicsReader"
-	property bool rotate: false
+	//property bool rotate: false
+	property int rotate: 0
 
 	function toggleFullscreen(){
 		if(window.visibility === 5){
@@ -83,10 +84,12 @@ Kirigami.ApplicationWindow {
 	Item{ id: toolbar
 		z: 500
 		// TODO perhaps header?  Kirigami.ToolBarApplicationHeader
-		width: (window.rotate? parent.height : parent.width)
-		y: (window.rotate? parent.height : 0)
+		width: (window.rotate !== 0 ? parent.height : parent.width)
+		//y: (window.rotate !== 0? parent.height : 0)
+		y: (window.rotate === -1 ? parent.height : (window.rotate === +1 ? 0 : 0))
+		x: (window.rotate === -1 ? 0 : (window.rotate === +1 ? window.width : 0))
 		transform: Rotation{
-			angle: (window.rotate ? -90 : 0)
+			angle: (window.rotate === -1 ? -90 : (window.rotate === +1 ? 90 : 0))
 		}
 
 		Kirigami.ActionToolBar { // top left toolbar
@@ -115,25 +118,43 @@ Kirigami.ApplicationWindow {
 					onTriggered: fileDialog.open()
 				},
 				Kirigami.Action { 
-					text: "fullscreen"
-					visible: !rotate // see comment in action "Rotate"
-					icon.name: "view-fullscreen" 
-					onTriggered: window.toggleFullscreen()
-				}, 
+					text: "Rotate" 
+					visible: (window.visibility === 5) && (window.rotate !== -1) // the actiontoolbar's background (id depends on kirigami.page) beheaves weirdly when toggling fullscreen while staying rotate, so I'll hide those button in order to avoid messing things up 
+					icon.name: "osd-rotate-ccw" 
+					onTriggered: {
+						window.rotate += -1
+						if (window.rotate < -1) {
+							window.rotate = -1
+						}
+					}
+				},
 				Kirigami.Action { 
 					text: "Rotate" 
-					visible: (window.visibility === 5) // the actiontoolbar's background (id depends on kirigami.page) beheaves weirdly when toggling fullscreen while staying rotate, so I'll hide those button in order to avoid messing things up 
-					icon.name: "screen-rotate-auto-on" 
-					onTriggered: window.rotate = !window.rotate
+					visible: (window.visibility === 5) && (window.rotate !== +1) // the actiontoolbar's background (id depends on kirigami.page) beheaves weirdly when toggling fullscreen while staying rotate, so I'll hide those button in order to avoid messing things up 
+					icon.name: "osd-rotate-cw" 
+					onTriggered: {
+						window.rotate += +1
+						if (window.rotate > +1) {
+							window.rotate = +1
+						}
+					}
+				},
+				Kirigami.Action { 
+					text: "fullscreen"
+					visible: rotate === 0 // see comment in action "Rotate"
+					icon.name: "view-fullscreen" 
+					onTriggered: window.toggleFullscreen()
 				}
 			]
 		}
 	}
 	pageStack.initialPage: Kirigami.Page {id: pagee
 		padding: 0
-		y: (rotate? window.height : 0)
+		//y: (rotate === -1? window.height : 0)
+		y: (window.rotate === -1 ? window.height : (window.rotate === +1 ? 0 : 0))
+		x: (window.rotate === -1 ? 0 : (window.rotate === +1 ? window.width : 0))
 		transform: Rotation{
-			angle: (window.rotate ? -90 : 0)
+			angle: (window.rotate === -1 ? -90 : (window.rotate === +1 ? 90 : 0))
 		}
 		Item{
 			id: page
@@ -226,16 +247,17 @@ Kirigami.ApplicationWindow {
 
 		//////// GUI //////////
 		Item { id: gui
-			width: (window.rotate? window.height : parent.width)
-			height: (window.rotate? page.width : parent.height)
-			y: (rotate? parent.height : 0)
+			width: (window.rotate !== 0? window.height : parent.width)
+			height: (window.rotate !== 0? page.width : parent.height)
+			y: (window.rotate === -1 ? parent.height : (window.rotate === +1 ? page.height - window.height : 0))
+			x: (window.rotate === -1 ? 0 : (window.rotate === +1 ? height : 0))
 			transform: Rotation{
-				angle: (window.rotate ? -90 : 0)
+				angle: (window.rotate === -1 ? -90 : (window.rotate === +1 ? 90 : 0))
 			}
 			
 			Image{ id: img
 				anchors.bottom: parent.bottom
-				height: (window.rotate? parent.height - (window.height - page.height) : parent.height)
+				height: (window.rotate !== 0? parent.height - (window.height - page.height) : parent.height)
 				anchors.left: parent.left
 				anchors.right: parent.right
 
@@ -368,9 +390,9 @@ Kirigami.ApplicationWindow {
 									text: name
 									wrapMode: Text.Wrap
 									font.pixelSize: 15
-									color: "white"
+									color: "white" // TODO CHANGE
 									style: Text.Outline
-									styleColor: "black"
+									styleColor: "black" // TODO CHANGE
 
 									MouseArea{
 										anchors.fill: parent

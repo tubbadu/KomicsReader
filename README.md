@@ -12,6 +12,6 @@
 * [x] hide leftbar on fullscreen and show on windowed
 * [ ] change every hardcoded color so that they follows the color scheme
 * [ ] add a help button
-* [ ] add also a "rotate clockwise" button
+* [x] add also a "rotate clockwise" button
 * [ ] load the page before and after so that the switching will be faster
 * [ ] (important) instead of extracting the whole file, just take the images you need time by time with karchive
