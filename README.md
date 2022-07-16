@@ -10,7 +10,7 @@
 * [ ] sometimes ark fails (but the files are extracted correctly), understand why and fix
 * [x] change color of leftbar (perhaps not transparent?)
 * [x] hide leftbar on fullscreen and show on windowed
-* [ ] change every hardcoded color so that they follows the color scheme
+* [x] change every hardcoded color so that they follows the color scheme
 * [ ] add a help button
 * [x] add also a "rotate clockwise" button
 * [ ] load the page before and after so that the switching will be faster

@@ -58,7 +58,7 @@ Kirigami.ApplicationWindow {
 			title: "Please choose a file"
 			folder: shortcuts.home
 			selectFolder: false
-			nameFilters: [ "Comics files (*.cbr *.cbz)", "Pdf files (*.pdf)" ] // TODO fix
+			nameFilters: [ "cbr, cbz, pdf (*.cbr *.cbz *.pdf)"]
 			onAccepted: {
 				let path = (fileDialog.fileUrl + "").replace(/\%23/g, "#").replace(/^file\:\/\/./g, "/") // the . is just because the text editor is stupid and \//g was considered as a comment
 				root.openFile(path)
@@ -390,9 +390,9 @@ Kirigami.ApplicationWindow {
 									text: name
 									wrapMode: Text.Wrap
 									font.pixelSize: 15
-									color: "white" // TODO CHANGE
+									color: Kirigami.Theme.textColor 
 									style: Text.Outline
-									styleColor: "black" // TODO CHANGE
+									styleColor: Kirigami.Theme.backgroundColor
 
 									MouseArea{
 										anchors.fill: parent
@@ -438,9 +438,9 @@ Kirigami.ApplicationWindow {
 					anchors.right: parent.right
 					font.pixelSize: 30
 					style: Text.Outline
-					styleColor: "black"
+					styleColor: Kirigami.Theme.backgroundColor 
 					visible: false
-					color: "white"
+					color: Kirigami.Theme.textColor 
 					function startTimeout(){
 						visible = true
 						pageCounterTimeout.restart()
