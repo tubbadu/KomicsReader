@@ -8,7 +8,8 @@
 #include "launcher.h"
 #include "directory.h"
 #include "fileinfo.h"
-#include "karchive.h"
+#include "extractor.h"
+
 
 
 int main(int argc, char *argv[])
@@ -25,7 +26,7 @@ int main(int argc, char *argv[])
 	qmlRegisterType<Launcher>("Launcher", 1, 0, "Launcher");
 	qmlRegisterType<Directory>("Directory", 1, 0, "Directory");
 	qmlRegisterType<FileInfo>("FileInfo", 1, 0, "FileInfo");
-	qmlRegisterType<Karchive>("Karchive", 1, 0, "Karchive");
+	qmlRegisterType<Extractor>("Extractor", 1, 0, "Extractor");
 
 	engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
 	engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

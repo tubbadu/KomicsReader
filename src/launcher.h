@@ -10,9 +10,14 @@ class Launcher : public QObject
 public:
     explicit Launcher(QObject *parent = 0);
     Q_INVOKABLE QString launch(const QString &program);
+    Q_INVOKABLE QString getZipList(const QString &filename);
+    Q_INVOKABLE QString getRarList(const QString &filename);
+    Q_INVOKABLE QString getProva();
+
+
 
 private:
     QProcess *m_process;
 };
 
-#endif // LAUNCHER_H
+#endif

@@ -10,6 +10,7 @@ import Qt.labs.settings 1.0
 import Launcher 1.0
 import Directory 1.0
 import FileInfo 1.0
+import Extractor 1.0
 
 // Base element, provides basic features needed for all kirigami applications
 
@@ -18,6 +19,18 @@ Kirigami.ApplicationWindow {
 	title: i18n("KomicsReader")
 	//property bool rotate: false
 	property int rotate: 0
+
+	Text{
+		z: 10000000
+		visible: false
+		id: log
+		text: "log:\n"
+		color: "white"
+		anchors.centerIn: parent
+		function log(x){
+			text += "\n" + x
+		}
+	}
 
 	function toggleFullscreen(){
 		if(window.visibility === 5){
@@ -56,6 +69,7 @@ Kirigami.ApplicationWindow {
 			id: launcher
 
 			function extract(file){
+				return 
 				let cmd = "ark \"" + file + "\" -o /tmp/KomicsReader -ab"
 				launch(cmd)
 			}
@@ -65,6 +79,65 @@ Kirigami.ApplicationWindow {
 				launch(cmd)
 			}
 		}
+		
+		Extractor{
+			id: extractor
+			property int extractedIndex: 0
+			property var ff
+			property string archiveType: ""
+			property string tmpFolder: ""
+			function extract(archive){
+				log.log("extracting: " + archive)
+				tmpFolder=getTmpFolder()
+				if(setArchiveFile(archive)){
+					if(archive.endsWith(".cbr")){
+						archiveType = "RAR"
+						ff = getRarList()
+						log.log(ff)
+						extractedIndex = 0
+						extractRarIndex(ff[extractedIndex])
+					} else if (archive.endsWith(".cbz")){
+						archiveType = "ZIP"
+						ff = getZipList()
+						extractedIndex = 0
+						extractZipIndex(ff[extractedIndex])
+					} else {
+						log.log("invalid archive: " + archive)
+					}
+				} else {
+					log.log("error: file does not exist")
+				}
+				
+			}
+
+			onMsg: (msg) => {
+				log.log("c++ msg: " + msg)
+			}
+
+			onExtracted: (file) => {
+				log.log("extracted " + tmpFolder + "/" + file)
+				//log.log("img.source = " + img.source)
+				root.fileList.push(tmpFolder + "/" + file)
+				lView.append(" page " + (root.fileList.length), root.fileList.length - 1)
+				extractedIndex++
+				if(extractedIndex < ff.length){
+					if(archiveType === "RAR")
+						extractRarIndex(ff[extractedIndex])
+					else if (archiveType === "ZIP")
+						extractZipIndex(ff[extractedIndex])
+					else
+						log.log("error")
+				} else {
+					log.log("finished!")
+					log.log(img.source)
+				}
+				if(img.source == "file://undefined" || (img.source + "").length < 1){
+					root.index = -1
+					resetImageTimer.start()
+				}
+			}
+		}
+		
 		Directory{
 			id: dir
 		}
@@ -185,7 +258,7 @@ Kirigami.ApplicationWindow {
 		property string currentFile: "" // perhaps change the functions extract etc so that no value is needed to be passed anymore, just read this value TODO (perhaps)
 		property var fileJson: []
 		property var fileList: []
-		property int index: 0
+		property int index: -1
 
 		onIndexChanged:{
 			pageCounter.startTimeout()
@@ -218,6 +291,8 @@ Kirigami.ApplicationWindow {
 		}
 
 		function openFile(arg=Qt.application.arguments[1]){
+			extractor.extract(arg)
+			return
 			//showPassiveNotification(arg)
 			// TODO do this only after the gui has been displayed (and display a loading message)
 			if(arg !== undefined){
@@ -232,7 +307,9 @@ Kirigami.ApplicationWindow {
 						// convert pdf to jpg TODO!
 						launcher.pdfConvert(arg)
 					} else {
-						launcher.extract(arg)
+						//launcher.extract(arg)
+						//extractor.extract(arg)
+						return
 					}
 					// read files
 					root.fileJson = dir.getAllFilesAndDirs(root.rootDir)
@@ -277,8 +354,8 @@ Kirigami.ApplicationWindow {
 				anchors.right: parent.right
 
 				fillMode: Image.PreserveAspectFit
-				property string url: root.fileList[root.index]
-				source: (url === "" ? null : "file://" + url.replace(/\#/g, "%23")) // is null good?
+				property string fileUrl: (root.fileList.length > 0 ? root.fileList[root.index] : null)
+				source: "file://" + root.fileList[root.index].replace(/\#/g, "%23") //(fileUrl === null ? null : "file://" + fileUrl)//.replace(/\#/g, "%23")) // is null good?
 				MultiPointTouchArea { id: touch
 					property int xThreshold: 100
 					property int yThreshold: 200
@@ -433,7 +510,7 @@ Kirigami.ApplicationWindow {
 				}
 				Controls.BusyIndicator {
 					id: loading
-					running: true
+					running: !true
 					visible: true
 					anchors.centerIn: parent
 					height: 100
@@ -479,11 +556,11 @@ Kirigami.ApplicationWindow {
 					repeat: false
 					interval: 100
 					onTriggered:{
-						let fileSize = fileinfo.getSize(root.currentFile)
+						/*let fileSize = fileinfo.getSize(root.currentFile)
 						let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
-						let key = fileName + "_" + fileSize
+						let key = fileName + "_" + fileSize*/
 
-						root.index = settings.value(key, 0)
+						root.index = 0//settings.value(key, 0)
 					}
 				}
 			}

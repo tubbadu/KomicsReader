@@ -28,15 +28,15 @@
 			null
 		],
 		[
-			"/home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.h",
+			"/home/tubbadu/code/Kirigami/KomicsReader/src/extractor.h",
 			"Mu",
-			"EWIEGA46WW/moc_fileinfo.cpp",
+			"EWIEGA46WW/moc_extractor.cpp",
 			null
 		],
 		[
-			"/home/tubbadu/code/Kirigami/KomicsReader/src/karchive.h",
+			"/home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.h",
 			"Mu",
-			"EWIEGA46WW/moc_karchive.cpp",
+			"EWIEGA46WW/moc_fileinfo.cpp",
 			null
 		],
 		[
@@ -147,12 +147,12 @@
 			null
 		],
 		[
-			"/home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.cpp",
+			"/home/tubbadu/code/Kirigami/KomicsReader/src/extractor.cpp",
 			"Mu",
 			null
 		],
 		[
-			"/home/tubbadu/code/Kirigami/KomicsReader/src/karchive.cpp",
+			"/home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.cpp",
 			"Mu",
 			null
 		],

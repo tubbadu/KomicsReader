@@ -146,19 +146,19 @@ src/CMakeFiles/KomicsReader.dir/fileinfo.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/KomicsReader.dir/fileinfo.cpp.s"
 	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tubbadu/code/Kirigami/KomicsReader/src/fileinfo.cpp -o CMakeFiles/KomicsReader.dir/fileinfo.cpp.s
 
-src/CMakeFiles/KomicsReader.dir/karchive.cpp.o: src/CMakeFiles/KomicsReader.dir/flags.make
-src/CMakeFiles/KomicsReader.dir/karchive.cpp.o: ../src/karchive.cpp
-src/CMakeFiles/KomicsReader.dir/karchive.cpp.o: src/CMakeFiles/KomicsReader.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/CMakeFiles/KomicsReader.dir/karchive.cpp.o"
-	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/KomicsReader.dir/karchive.cpp.o -MF CMakeFiles/KomicsReader.dir/karchive.cpp.o.d -o CMakeFiles/KomicsReader.dir/karchive.cpp.o -c /home/tubbadu/code/Kirigami/KomicsReader/src/karchive.cpp
+src/CMakeFiles/KomicsReader.dir/extractor.cpp.o: src/CMakeFiles/KomicsReader.dir/flags.make
+src/CMakeFiles/KomicsReader.dir/extractor.cpp.o: ../src/extractor.cpp
+src/CMakeFiles/KomicsReader.dir/extractor.cpp.o: src/CMakeFiles/KomicsReader.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tubbadu/code/Kirigami/KomicsReader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/CMakeFiles/KomicsReader.dir/extractor.cpp.o"
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/KomicsReader.dir/extractor.cpp.o -MF CMakeFiles/KomicsReader.dir/extractor.cpp.o.d -o CMakeFiles/KomicsReader.dir/extractor.cpp.o -c /home/tubbadu/code/Kirigami/KomicsReader/src/extractor.cpp
 
-src/CMakeFiles/KomicsReader.dir/karchive.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/KomicsReader.dir/karchive.cpp.i"
-	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tubbadu/code/Kirigami/KomicsReader/src/karchive.cpp > CMakeFiles/KomicsReader.dir/karchive.cpp.i
+src/CMakeFiles/KomicsReader.dir/extractor.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/KomicsReader.dir/extractor.cpp.i"
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tubbadu/code/Kirigami/KomicsReader/src/extractor.cpp > CMakeFiles/KomicsReader.dir/extractor.cpp.i
 
-src/CMakeFiles/KomicsReader.dir/karchive.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/KomicsReader.dir/karchive.cpp.s"
-	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tubbadu/code/Kirigami/KomicsReader/src/karchive.cpp -o CMakeFiles/KomicsReader.dir/karchive.cpp.s
+src/CMakeFiles/KomicsReader.dir/extractor.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/KomicsReader.dir/extractor.cpp.s"
+	cd /home/tubbadu/code/Kirigami/KomicsReader/build/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tubbadu/code/Kirigami/KomicsReader/src/extractor.cpp -o CMakeFiles/KomicsReader.dir/extractor.cpp.s
 
 src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp.o: src/CMakeFiles/KomicsReader.dir/flags.make
 src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp.o: src/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp
@@ -181,7 +181,7 @@ KomicsReader_OBJECTS = \
 "CMakeFiles/KomicsReader.dir/launcher.cpp.o" \
 "CMakeFiles/KomicsReader.dir/directory.cpp.o" \
 "CMakeFiles/KomicsReader.dir/fileinfo.cpp.o" \
-"CMakeFiles/KomicsReader.dir/karchive.cpp.o" \
+"CMakeFiles/KomicsReader.dir/extractor.cpp.o" \
 "CMakeFiles/KomicsReader.dir/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp.o"
 
 # External object files for target KomicsReader
@@ -192,7 +192,7 @@ bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/main.cpp.o
 bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/launcher.cpp.o
 bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/directory.cpp.o
 bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/fileinfo.cpp.o
-bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/karchive.cpp.o
+bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/extractor.cpp.o
 bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/KomicsReader_autogen/EWIEGA46WW/qrc_resources.cpp.o
 bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/build.make
 bin/KomicsReader: src/CMakeFiles/KomicsReader.dir/link.txt
