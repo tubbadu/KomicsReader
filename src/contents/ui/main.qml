@@ -99,6 +99,7 @@ Kirigami.ApplicationWindow {
 					} else if (archive.endsWith(".cbz")){
 						archiveType = "ZIP"
 						ff = getZipList()
+						log.log(ff)
 						extractedIndex = 0
 						extractZipIndex(ff[extractedIndex])
 					} else {
@@ -115,8 +116,7 @@ Kirigami.ApplicationWindow {
 			}
 
 			onExtracted: (file) => {
-				log.log("extracted " + tmpFolder + "/" + file)
-				//log.log("img.source = " + img.source)
+				//log.log("extracted " + tmpFolder + "/" + file)
 				root.fileList.push(tmpFolder + "/" + file)
 				lView.append(" page " + (root.fileList.length), root.fileList.length - 1)
 				extractedIndex++
@@ -129,9 +129,9 @@ Kirigami.ApplicationWindow {
 						log.log("error")
 				} else {
 					log.log("finished!")
-					log.log(img.source)
 				}
-				if(img.source == "file://undefined" || (img.source + "").length < 1){
+				if(root.reloaded){  // || img.source == "file://undefined" || (img.source + "").length < 1){
+					root.reloaded = false
 					root.index = -1
 					resetImageTimer.start()
 				}
@@ -258,44 +258,82 @@ Kirigami.ApplicationWindow {
 		property string currentFile: "" // perhaps change the functions extract etc so that no value is needed to be passed anymore, just read this value TODO (perhaps)
 		property var fileJson: []
 		property var fileList: []
+		property string pdfFile: ""
 		property int index: -1
+		property bool isPdf: false
+		property bool reloaded: false
 
 		onIndexChanged:{
 			pageCounter.startTimeout()
 		}
 
 		function next(q=1){
-			index += q
-			if(index > fileList.length - 1){
-				index = fileList.length - 1
+			if(isPdf){
+				img.currentFrame += q
+				if(img.currentFrame > img.frameCount - 1){
+					img.currentFrame = img.frameCount - 1
+				}
+			} else {
+				index += q
+				if(index > fileList.length - 1){
+					index = fileList.length - 1
+				}
+				/*if(!fileList[i]["isFile"]){
+					index++
+				}*/
 			}
-			if(!fileList[i]["isFile"]){
-				index++
-			}
+			
 		}
 
 		function previous(q=1){
-			index -= q
-			if(index < 0){
-				index = 0
+			if(isPdf){
+				img.currentFrame -= q
+				if(img.currentFrame < 0){
+					img.currentFrame = 0
+				}
+			}else {
+				index -= q
+				if(index < 0){
+					index = 0
+				}
+				/*if(!fileList[i]["isFile"]){
+					index--
+				}*/
 			}
-			if(!fileList[i]["isFile"]){
-				index--
-			}
+			
 		}
 
 		function goTo(page){
-			if(page >= 0 && page < fileList.length){
-				index = page
+			if(isPdf){
+				if(page >= 0 && page < img.frameCount){
+					img.currentFrame = page
+				}
+			} else {
+				if(page >= 0 && page < fileList.length){
+					index = page
+				}
 			}
 		}
+			
 
 		function openFile(arg=Qt.application.arguments[1]){
-			extractor.extract(arg)
+			root.index = -1
+			img.currentFrame = 0
+			root.isPdf = false
+			lModel.model.clear()
+			fileList = []
+			reloaded = true
+			
+			if(arg.endsWith(".pdf")){
+				root.isPdf = true
+				pdfFile = "file://" + arg
+			} else {
+				extractor.extract(arg)
+			}
 			return
 			//showPassiveNotification(arg)
 			// TODO do this only after the gui has been displayed (and display a loading message)
-			if(arg !== undefined){
+			/*if(arg !== undefined){
 				currentFile = arg
 				if(dir.exists(arg) && arg.match(/\.(cbz|cbr|pdf)$/g) !== null){
 					// create dir if not present
@@ -334,7 +372,7 @@ Kirigami.ApplicationWindow {
 			} else {
 				console.log("is undefined")
 			}
-			loading.running = false
+			loading.running = false*/
 		}
 
 		//////// GUI //////////
@@ -355,7 +393,8 @@ Kirigami.ApplicationWindow {
 
 				fillMode: Image.PreserveAspectFit
 				property string fileUrl: (root.fileList.length > 0 ? root.fileList[root.index] : null)
-				source: "file://" + root.fileList[root.index].replace(/\#/g, "%23") //(fileUrl === null ? null : "file://" + fileUrl)//.replace(/\#/g, "%23")) // is null good?
+				source: (root.isPdf ? root.pdfFile : "file://" + root.fileList[root.index].replace(/\#/g, "%23")) //(fileUrl === null ? null : "file://" + fileUrl)//.replace(/\#/g, "%23")) // is null good?
+				//currentFrame: (root.isPdf ? root.index : 0) // for PDF
 				MultiPointTouchArea { id: touch
 					property int xThreshold: 100
 					property int yThreshold: 200
@@ -562,6 +601,15 @@ Kirigami.ApplicationWindow {
 
 						root.index = 0//settings.value(key, 0)
 					}
+				}
+
+				Rectangle{ // white background (for PDF view)
+					z: -1
+					visible: root.isPdf
+					anchors.centerIn: parent
+					height: img.paintedHeight
+					width: img.paintedWidth
+					color: "white"
 				}
 			}
 		}

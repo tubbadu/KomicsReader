@@ -72,7 +72,7 @@ QStringList Extractor::getRarList(){
 		for(auto s: output){
 			if(s.endsWith(".jpg") || s.endsWith(".jpeg") || s.endsWith(".png") || s.endsWith(".jpe"))
 				//ret.append(s.split(" ")[s.split(" ").size()-1]); // TODO tidy up
-				ret.append(s.replace(QRegExp("^ *.{7} +[0-9]* +[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} {2}"), ""));
+				ret.append(s.replace(QRegExp("^ *(.{7}|.{10}) +[0-9]* +[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} {2}"), ""));
 		}
 		// must now be sorted in alphabetical order
 		ret.sort();
