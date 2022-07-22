@@ -5,6 +5,7 @@ import QtQuick.Controls 2.15 as Controls
 import QtQuick.Dialogs 1.3
 import QtQml.Models 2.2
 import Qt.labs.settings 1.0
+import QtQuick.Window 2.2
 
 
 import Launcher 1.0
@@ -17,20 +18,37 @@ import Extractor 1.0
 Kirigami.ApplicationWindow {
 	id: window
 	title: i18n("KomicsReader")
+	height: Screen.height - 100
+	width: Screen.width - 100
 	//property bool rotate: false
 	property int rotate: 0
 
-	Text{
+	Controls.ScrollView{
+		anchors.right: parent.right
+		visible: log.visible
+		width: 700
+		height: 700
 		z: 10000000
-		visible: false
-		id: log
-		text: "log:\n"
-		color: "white"
-		anchors.centerIn: parent
-		function log(x){
-			text += "\n" + x
+		Controls.TextArea{
+			visible: false ////// LOGLOGLOGLOGLOGLOGLOGLOGLOGLOGLOGLOGLOGLOGLOG
+			id: log
+			text: "log:\n"
+			color: "red"
+			//anchors.centerIn: parent
+			anchors.fill: parent
+			function log(x){
+				text += "\n" + x
+			}
 		}
 	}
+
+	Text{
+		visible: log.visible
+		text: root.index
+		z: 10000000000000000
+		color: "green"
+	}
+	
 
 	function toggleFullscreen(){
 		if(window.visibility === 5){
@@ -65,7 +83,7 @@ Kirigami.ApplicationWindow {
 				}
 			}
 		}
-		Launcher {
+		/*Launcher {
 			id: launcher
 
 			function extract(file){
@@ -75,35 +93,66 @@ Kirigami.ApplicationWindow {
 			}
 
 			function pdfConvert(file){
+				return
 				let cmd = "pdftoppm -jpeg -r 300 \"" + file + "\" -o /tmp/KomicsReader/img"
 				launch(cmd)
 			}
-		}
+		}*/
 		
 		Extractor{
 			id: extractor
+			// TODO 
+			// start extracting not from 0 but from pagenumber - 5
 			property int extractedIndex: 0
+			property int firstExtractedIndex: 0
+			property bool firstExtraction: true
 			property var ff
 			property string archiveType: ""
 			property string tmpFolder: ""
+
+			function extractIndex(){
+				if(archiveType === "RAR")
+					extractRarIndex(ff[extractedIndex])
+				else if (archiveType === "ZIP")
+					extractZipIndex(ff[extractedIndex])
+				else
+					log.log("error")
+			}
+
 			function extract(archive){
-				log.log("extracting: " + archive)
 				tmpFolder=getTmpFolder()
 				if(setArchiveFile(archive)){
+
 					if(archive.endsWith(".cbr")){
 						archiveType = "RAR"
 						ff = getRarList()
-						log.log(ff)
-						extractedIndex = 0
-						extractRarIndex(ff[extractedIndex])
-					} else if (archive.endsWith(".cbz")){
+					} else if (archive.endsWith(".cbz")) {
 						archiveType = "ZIP"
 						ff = getZipList()
-						log.log(ff)
-						extractedIndex = 0
-						extractZipIndex(ff[extractedIndex])
-					} else {
+					}else {
 						log.log("invalid archive: " + archive)
+						return
+					}
+
+
+					let fileSize = fileinfo.getSize(root.currentFile)
+					let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
+
+					let key = fileName + "_" + fileSize
+					firstExtractedIndex = settings.value(key, 0) - 5
+					log.log("firstExtractedIndex=" + firstExtractedIndex)
+					if(firstExtractedIndex < 0) {
+						firstExtractedIndex = 0
+					}
+					for(let i=0; i<firstExtractedIndex; i++){
+						root.fileList.push("-1")
+					}
+					extractedIndex = firstExtractedIndex
+
+					if(archive.endsWith(".cbr")){
+						extractRarIndex(ff[extractedIndex])
+					} else if (archive.endsWith(".cbz")) {
+						extractZipIndex(ff[extractedIndex])
 					}
 				} else {
 					log.log("error: file does not exist")
@@ -112,28 +161,62 @@ Kirigami.ApplicationWindow {
 			}
 
 			onMsg: (msg) => {
-				log.log("c++ msg: " + msg)
+				//log.log("c++ msg: " + msg)
 			}
 
 			onExtracted: (file) => {
-				//log.log("extracted " + tmpFolder + "/" + file)
-				root.fileList.push(tmpFolder + "/" + file)
-				lView.append(" page " + (root.fileList.length), root.fileList.length - 1)
-				extractedIndex++
-				if(extractedIndex < ff.length){
-					if(archiveType === "RAR")
-						extractRarIndex(ff[extractedIndex])
-					else if (archiveType === "ZIP")
-						extractZipIndex(ff[extractedIndex])
-					else
-						log.log("error")
+				if(root.fileList.length > extractedIndex){
+					root.fileList[extractedIndex] = tmpFolder + "/" + file
 				} else {
-					log.log("finished!")
+					root.fileList.splice(extractedIndex, 0, tmpFolder + "/" + file)
 				}
-				if(root.reloaded){  // || img.source == "file://undefined" || (img.source + "").length < 1){
-					root.reloaded = false
+				lView.insert(" page " + extractedIndex, extractedIndex, (extractedIndex > lView.count ? lView.count : extractedIndex))
+				//log.log("lview append: " + extractedIndex + " at position " + (extractedIndex > lView.count ? lView.count : extractedIndex))
+				extractedIndex++
+				
+				if(firstExtraction && extractedIndex < ff.length){
+					//log.log("extracting index! " + extractedIndex)
+					extractIndex()
+				} else if(!firstExtraction && extractedIndex < firstExtractedIndex){
+					//log.log("extracting index II! " + extractedIndex)
+					extractIndex()
+				} else {
+					if(firstExtraction){
+						firstExtraction = false
+						log.log("now restarting from 0 until settings.value(key, 0) - 5!")
+						extractedIndex = 0
+						extractIndex()
+					} else {
+						log.log("finished!\n")
+						/*let fileSize = fileinfo.getSize(root.currentFile)
+						let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
+						let key = fileName + "_" + fileSize
+						let setIndex = settings.value(key, 0)
+						root.index = setIndex*/
+					}
+				}
+				if(root.reloaded){
+					let fileSize = fileinfo.getSize(root.currentFile)
+					let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
+					let key = fileName + "_" + fileSize
+					log.log(settings.value(key, "niente di nienmte"))
+					let setIndex = settings.value(key, 0)
 					root.index = -1
-					resetImageTimer.start()
+					log.log("check: " + setIndex + ", " + root.fileList.length + ", " + firstExtractedIndex)
+					if(setIndex == root.fileList.length - 1){
+						log.log("set index!\n")
+						root.reloaded = false
+						root.index = setIndex
+					}
+					
+					
+					
+					
+
+					//root.index = settings.value(key, 0)
+
+					/*resetImageTimer.setUrl = root.fileList[settings.value(key, 0)]
+					resetImageTimer.start()*/
 				}
 			}
 		}
@@ -330,49 +413,6 @@ Kirigami.ApplicationWindow {
 			} else {
 				extractor.extract(arg)
 			}
-			return
-			//showPassiveNotification(arg)
-			// TODO do this only after the gui has been displayed (and display a loading message)
-			/*if(arg !== undefined){
-				currentFile = arg
-				if(dir.exists(arg) && arg.match(/\.(cbz|cbr|pdf)$/g) !== null){
-					// create dir if not present
-					dir.makeDir(root.rootDir)
-					// empty dir from precedent files
-					dir.emptyDir(root.rootDir)
-					// extract file"
-					if( arg.match(/\.(pdf)$/g) !== null){
-						// convert pdf to jpg TODO!
-						launcher.pdfConvert(arg)
-					} else {
-						//launcher.extract(arg)
-						//extractor.extract(arg)
-						return
-					}
-					// read files
-					root.fileJson = dir.getAllFilesAndDirs(root.rootDir)
-					root.fileJson.shift() // remove /tmp/KomicsReader from file list
-					root.fileJson.shift() // remove /tmp/KomicsReader/firstfolder from file list
-					root.fileList = []
-					lModel.model.clear()
-					for(let i=0; i<root.fileJson.length; i++){
-						if(root.fileJson[i]["isFile"]){
-							lView.append("    Page " + (root.fileList.length + 1), root.fileList.length)
-							root.fileList.push(root.fileJson[i]["url"])
-						} else {
-							lView.append(" " + root.fileJson[i]["url"].replace(/^.*[\\\/]/, ""), root.fileList.length) //.replace(/^.*[\\\/]/, "")
-						}
-					}
-					// unset the image source
-					root.index = -1
-					// display the first image after a small amount of time (so it resets)
-					resetImageTimer.start()
-					// do other things under here
-				}		
-			} else {
-				console.log("is undefined")
-			}
-			loading.running = false*/
 		}
 
 		//////// GUI //////////
@@ -544,6 +584,10 @@ Kirigami.ApplicationWindow {
 							function append(name, pos){ // just a shorter way to do it
 								lModel.model.append({"name": name, "pos": pos})
 							}
+
+							function insert(name, pos, ix){ // just a shorter way to do it
+								lModel.model.insert(ix, {"name": name, "pos": pos})
+							}
 						}
 					}
 				}
@@ -593,13 +637,20 @@ Kirigami.ApplicationWindow {
 				Timer { id: resetImageTimer
 					running: false
 					repeat: false
+					property string setUrl
 					interval: 100
 					onTriggered:{
-						/*let fileSize = fileinfo.getSize(root.currentFile)
+						root.index = setUrl 
+						return
+						let fileSize = fileinfo.getSize(root.currentFile)
 						let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
-						let key = fileName + "_" + fileSize*/
+						let key = fileName + "_" + fileSize
 
-						root.index = 0//settings.value(key, 0)
+						if(settings.value(key, 0) < root.fileList.length){
+							root.index = settings.value(key, 0)
+						} else {
+							resetImageTimer.restart()
+						}
 					}
 				}
 
