@@ -139,6 +139,8 @@ Kirigami.ApplicationWindow {
 					let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
 
 					let key = fileName + "_" + fileSize
+					log.log("key: " + key)
+					log.log("currentfile: " + root.currentFile)
 					firstExtractedIndex = settings.value(key, 0) - 5
 					log.log("firstExtractedIndex=" + firstExtractedIndex)
 					if(firstExtractedIndex < 0) {
@@ -199,6 +201,7 @@ Kirigami.ApplicationWindow {
 					let fileSize = fileinfo.getSize(root.currentFile)
 					let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
 					let key = fileName + "_" + fileSize
+					log.log("key2: " + key)
 					log.log(settings.value(key, "niente di nienmte"))
 					let setIndex = settings.value(key, 0)
 					root.index = -1
@@ -245,6 +248,7 @@ Kirigami.ApplicationWindow {
 				let fileSize = fileinfo.getSize(path)
 				let fileName = path.replace(/^.*[\\\/]/, "")
 				let key = fileName + "_" + fileSize
+				log.log("key3: " + key)
 				setValue(key, index)
 			}
 		}
@@ -400,6 +404,7 @@ Kirigami.ApplicationWindow {
 			
 
 		function openFile(arg=Qt.application.arguments[1]){
+			root.currentFile = arg
 			root.index = -1
 			img.currentFrame = 0
 			root.isPdf = false
@@ -645,6 +650,7 @@ Kirigami.ApplicationWindow {
 						let fileSize = fileinfo.getSize(root.currentFile)
 						let fileName = root.currentFile.replace(/^.*[\\\/]/, "")
 						let key = fileName + "_" + fileSize
+						log.log("key4: " + key)
 
 						if(settings.value(key, 0) < root.fileList.length){
 							root.index = settings.value(key, 0)
